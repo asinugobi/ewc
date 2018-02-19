@@ -1,5 +1,6 @@
 import tensorflow as tf 
 import numpy as np 
+import cPickle as pickle 
 
 class Model(object): 
     def __init__(self, classifier):
@@ -24,7 +25,6 @@ class Model(object):
 
         sess.run(tf.global_variables_initializer())
 
-
         # Sample from a random class from softmax 
         # scores = tf.nn.softmax_cross_entropy_with_logits(labels=trainer.y, logits=self.classifier.get_scores())
         scores = tf.nn.softmax(self.classifier.get_scores())
@@ -37,14 +37,13 @@ class Model(object):
                 # Select input image randomly 
                 image_idx = np.random.randint(dataset.images.shape[0])
 
-                results = sess.run(tf.log(scores), 
-                feed_dict={
-                    trainer.y: dataset.labels[image_idx:image_idx + 1],
-                    trainer.x: dataset.images[image_idx:image_idx + 1], 
-                    trainer.phase: 1, 
-                    trainer.dropout: 0.75})
-                # print(results)
-
+                # results = sess.run(tf.log(scores), 
+                # feed_dict={
+                #     trainer.y: dataset.labels[image_idx:image_idx + 1],
+                #     trainer.x: dataset.images[image_idx:image_idx + 1], 
+                #     trainer.phase: 1, 
+                #     trainer.dropout: 0.75})
+                # # print(results)
 
                 # Compute first-order derivatives
                 # Consider using log likelihood as an alternative implementation 
@@ -67,7 +66,7 @@ class Model(object):
         for var in range(len(self.F_matrix)): 
             self.F_matrix[var] /= num_samples 
 
-    def save_weights(self, sess):
+    def save_weights(self, sess, filename):
         """
         Save weights after training source task. 
         """
@@ -79,6 +78,23 @@ class Model(object):
         with sess.as_default(): 
             for v in range(len(self.variable_list)):
                 self.star_vars.append(self.variable_list[v].eval())
+
+        # Save weights object as a file
+        with open(filename, 'wb') as f: 
+            print('Saving weights as %s' % filename)
+            pickle.dump(self.star_vars, f)
+            print('Completed saving weights.')
+
+    def load_weights(self, sess, filename): 
+        """
+        Load weights after training source task. 
+        """
+
+        with file(fileanme, 'rb') as f: 
+            print('Loading weights from %s' % filename)
+            self.star_vars = pickle.load(f)
+            print('Completed loading weights.')
+
     
     def ewc_loss(self, y, star_vars, fisher_multiplier): 
         """

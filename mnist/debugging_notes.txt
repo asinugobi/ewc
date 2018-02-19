@@ -3,3 +3,6 @@ Notes:
 
 - may want to consider switching to softmax_cross_entropy_with_logits_v2 
 
+- bug in transfer experiments 
+    - PROBLEM: not saving the weights from the previous task 
+    - FIX: use python module pickle to save objects 

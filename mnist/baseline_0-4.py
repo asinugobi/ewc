@@ -12,3 +12,4 @@ mnist, mnist_2 = data_handler.split_dataset() # Train on 1-4
 trainer = Trainer(retrain=False)
 trainer.train(mnist) 
 trainer.test(mnist) 
+trainer.model.save_weights(trainer.sess, 'pretransfer_task.p')
