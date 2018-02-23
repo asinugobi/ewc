@@ -166,4 +166,3 @@ class Trainer(object):
                 total_correct_preds += self.sess.run(accuracy)
 
             print('Accuracy {0}'.format(total_correct_preds/mnist.test.num_examples))
-        self.sess.close() 

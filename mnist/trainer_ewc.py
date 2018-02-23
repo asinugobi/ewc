@@ -59,7 +59,7 @@ class Trainer(object):
         self.model = Model(self.cnn)
 
     def set_ewc_loss(self):  
-        self.model.ewc_loss(self.y, self.model.star_vars, 0)
+        self.model.ewc_loss(self.y, self.model.star_vars, 100000)
 
         # If retraining the data, select trainable variables
         var_list = tf.trainable_variables()

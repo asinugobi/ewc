@@ -90,7 +90,7 @@ class Model(object):
         Load weights after training source task. 
         """
 
-        with file(fileanme, 'rb') as f: 
+        with file(filename, 'rb') as f: 
             print('Loading weights from %s' % filename)
             self.star_vars = pickle.load(f)
             print('Completed loading weights.')
