@@ -19,7 +19,7 @@ class SimpleCNNTrainer(BaseTrain):
             losses.append(loss)
             accs.append(acc)
             test_accuracies.append(test_accuracy)
-            
+
         loss = np.mean(losses)
         acc = np.mean(accs)
         test_accuracy = np.mean(test_accuracies)
@@ -31,7 +31,7 @@ class SimpleCNNTrainer(BaseTrain):
         summaries_dict['test_accuracy'] = test_accuracy
 
         # Print results. 
-        print('Iteration: %s' % test_it)
+        print('Iteration: %s' % self.test_it)
         print('Loss: %s' % loss)
         print('Training accuracy: %s' % acc)
         print('Test accuracy: %s' % test_accuracy)

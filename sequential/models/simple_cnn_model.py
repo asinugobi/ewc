@@ -24,7 +24,7 @@ class SimpleCNNModel(BaseModel):
                         num_classes=self.config.num_classes,
                         skip_layer=[''],
                         weights_path='DEFAULT')
-        self.cnn.create_graph() 
+        # self.cnn.create_graph() 
 
         # define loss 
         self.loss() 
