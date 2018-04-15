@@ -23,17 +23,23 @@ def main():
 
     # create the experiments dirs
     create_dirs([config.summary_dir, config.checkpoint_dir])
+ 
     # create tensorflow session
     sess = tf.Session()
+ 
     # create instance of the model you want
     model = FFNModel(config)
+ 
     # create your data generator
     data = DataHandler(config)
-    mnist = data.get_dataset()
+    data.permute_mnist()
+    permutated_mnist = data.get_dataset()
+    
     # create tensorboard logger
     logger = Logger(sess, config)
+ 
     # create trainer and path all previous components to it
-    trainer = FFNTrainer(sess, model, mnist, config, logger)
+    trainer = FFNTrainer(sess, model, permutated_mnist, config, logger)
 
     # here you train your model
     trainer.train()

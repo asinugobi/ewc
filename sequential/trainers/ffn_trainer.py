@@ -28,7 +28,7 @@ class FFNTrainer(BaseTrain):
         summaries_dict['loss'] = loss 
         summaries_dict['acc'] = acc 
         summaries_dict['test_accuracy'] = test_accuracy
-        print('Iteration: %s' % test_it)
+        print('Iteration: %s' % self.test_it)
         print('Loss: %s' % loss)
         print('Training accuracy: %s' % acc)
         print('Test accuracy: %s' % test_accuracy)

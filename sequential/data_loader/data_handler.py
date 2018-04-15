@@ -1,6 +1,7 @@
 from tensorflow.contrib.learn.python.learn.datasets.mnist import read_data_sets, DataSet
 from tensorflow.python.framework import dtypes
 from tensorflow.contrib.learn.python.learn.datasets import base
+from copy import deepcopy
 
 import numpy as np 
 
@@ -15,6 +16,16 @@ class DataHandler(object):
     
     def get_dataset(self): 
         return self.dataset
+
+    def permute_mnist(self):
+        perm_inds = range(self.dataset.train.images.shape[1])
+        np.random.shuffle(perm_inds)
+        permutated_mnist = deepcopy(self.dataset)
+        sets = ["train", "validation", "test"]
+        for set_name in sets:
+            this_set = getattr(permutated_mnist, set_name) # shallow copy
+            this_set._images = np.transpose(np.array([this_set.images[:,c] for c in perm_inds]))
+        return permutated_mnist
 
     def split_dataset(self, dtype=dtypes.float32, reshape=True, seed=None, validation_size=7000): 
         labels = self.dataset.train.labels  
