@@ -9,7 +9,7 @@ class SimpleCNNModel(BaseModel):
         self.init_saver()
 
     def build_model(self):
-        self.is_training = tf.placeholder(tf.bool)
+        # self.is_training = tf.placeholder(tf.bool)
 
         # define placeholder for x and y 
         self.x = tf.placeholder(tf.float32, shape=[None, 784])

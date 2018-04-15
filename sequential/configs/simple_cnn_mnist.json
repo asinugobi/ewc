@@ -2,8 +2,9 @@
   "exp_name": "simple_cnn_mnist",
   "dataset": "mnist",
   "num_epochs": 100,
-  "num_iter_per_epoch": 100,
+  "num_iter_per_epoch": 20,
   "learning_rate": 0.001,
+  "dropout": 0.75,
   "batch_size": 128,
   "state_size": [784],
   "max_to_keep": 5

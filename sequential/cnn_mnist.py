@@ -2,8 +2,8 @@ import tensorflow as tf
 
 from data_loader.data_generator import DataGenerator
 from data_loader.data_handler import DataHandler
-from models.ffn_model import FFNModel
-from trainers.ffn_trainer import FFNTrainer
+from models.simple_cnn_model import SimpleCNNModel
+from trainers.simple_cnn_trainer import SimpleCNNTrainer
 from utils.config import process_config
 from utils.dirs import create_dirs
 from utils.logger import Logger
@@ -26,14 +26,14 @@ def main():
     # create tensorflow session
     sess = tf.Session()
     # create instance of the model you want
-    model = FFNModel(config)
+    model = SimpleCNNModel(config)
     # create your data generator
     data = DataHandler(config)
     mnist = data.get_dataset()
     # create tensorboard logger
     logger = Logger(sess, config)
     # create trainer and path all previous components to it
-    trainer = FFNTrainer(sess, model, mnist, config, logger)
+    trainer = SimpleCNNTrainer(sess, model, mnist, config, logger)
 
     # here you train your model
     trainer.train()
