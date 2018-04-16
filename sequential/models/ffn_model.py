@@ -51,6 +51,9 @@ class FFNModel(BaseModel):
         # here you initalize the tensorflow saver that will be used in saving the checkpoints.
         self.saver = tf.train.Saver(max_to_keep=self.config.max_to_keep)
 
+    def reset_saver(self, vars): 
+        self.saver = tf.train.Saver(var_list=vars, max_to_keep=self.config.max_to_keep)
+
     def star(self):
         # used for saving optimal weights after most recent task training
         self.star_vars = []
