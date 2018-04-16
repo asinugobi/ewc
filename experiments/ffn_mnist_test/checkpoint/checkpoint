@@ -1,0 +1,2 @@
+model_checkpoint_path: "ffn_mnist_test-0"
+all_model_checkpoint_paths: "ffn_mnist_test-0"
