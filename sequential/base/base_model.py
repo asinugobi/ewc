@@ -1,6 +1,5 @@
 import tensorflow as tf
 
-
 class BaseModel(object):
     def __init__(self, config):
         self.config = config
