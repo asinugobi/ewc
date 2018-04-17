@@ -43,6 +43,24 @@ def main():
     # here you train your model
     trainer.train()
 
+    # save weights to be transferred (TO-DO)
+    model.reset_saver(save)
+    model.save(sess)
+
+    ##################################################################
+    ##################### TRANSFER TO NEW DATASET ####################
+    ##################################################################
+
+    # reset graph 
+    tf.reset_default_graph() 
+
+    # create new dataset for model 
+    permutated_mnist_2 = data.permute_mnist() 
+
+    # transfer weights to new model (TODO)
+    model.load(sess)
+
+
 
 if __name__ == '__main__':
     main()

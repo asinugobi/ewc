@@ -42,6 +42,10 @@ class FFNTrainer(BaseTrain):
 
         return loss, acc 
 
+    def train_new_dataset(self, new_data):
+        self.data = new_data
+        self.train()  
+
     def test(self): 
         batch_x, batch_y = self.data.test.next_batch(self.config.batch_size)
         feed_dict = {self.model.x: batch_x, self.model.y: batch_y, self.model.is_training: False}
