@@ -46,8 +46,11 @@ class SimpleCNNModel(BaseModel):
         
         with tf.control_dependencies(update_ops), tf.name_scope('optimize'): 
             learning_rate = self.config.learning_rate
-            optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
-            self.train_step = optimizer.minimize(self.cross_entropy)
+            self.optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
+            self.train_step = self.optimizer.minimize(self.cross_entropy)
+
+    def reset_train_step(self, variables=tf.trainable_variables()):
+        self.train_step = self.optimizer.minimize(self.cross_entropy,                                           var_list=variables)
 
     def set_metrics(self): 
         with tf.name_scope('accuracy'): 
@@ -57,6 +60,10 @@ class SimpleCNNModel(BaseModel):
     def init_saver(self):
         # here you initalize the tensorflow saver that will be used in saving the checkpoints.
         self.saver = tf.train.Saver(max_to_keep=self.config.max_to_keep)
+
+
+    def reset_saver(self, vars): 
+        self.saver = tf.train.Saver(var_list=vars, max_to_keep=self.config.max_to_keep)
 
     def star(self):
         # used for saving optimal weights after most recent task training
