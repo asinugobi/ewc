@@ -32,8 +32,7 @@ def main():
     
     # create your data generator
     data = DataHandler(config)
-    data.permute_mnist() 
-    permutated_mnist = data.get_dataset()
+    permutated_mnist = data.permute_mnist() 
     
     # create tensorboard logger
     logger = Logger(sess, config)
