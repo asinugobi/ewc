@@ -39,8 +39,11 @@ class FFNModel(BaseModel):
         
         with tf.control_dependencies(update_ops), tf.name_scope('optimize'): 
             learning_rate = 0.1 
-            optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
-            self.train_step = optimizer.minimize(self.cross_entropy)
+            self.optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
+            self.train_step = self.optimizer.minimize(self.cross_entropy)
+
+    def reset_train_step(self, variables=tf.trainable_variables()):
+        self.train_step = self.optimizer.minimize(self.cross_entropy,                                           var_list=variables)
 
     def set_metrics(self): 
         with tf.name_scope('accuracy'): 

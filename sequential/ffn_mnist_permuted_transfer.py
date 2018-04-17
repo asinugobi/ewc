@@ -40,25 +40,41 @@ def main():
     # create trainer and path all previous components to it
     trainer = FFNTrainer(sess, model, permutated_mnist, config, logger)
 
-    # here you train your model
+    # train your model
     trainer.train()
 
     # save weights to be transferred (TO-DO)
-    model.reset_saver(save)
+    variables = tf.trainable_variables() 
+    print('length of variables: %s' % len(variables))
+    
+    n = 2
+    saved_variables = variables[:n] 
+    reinitialized_variables = variables[n:] 
+    model.reset_saver(saved_variables)
     model.save(sess)
 
     ##################################################################
     ##################### TRANSFER TO NEW DATASET ####################
     ##################################################################
 
-    # reset graph 
-    tf.reset_default_graph() 
+    ## transfer weights to new model (TODO)
+    # reinitialize top layer weights 
+    init = tf.variables_initializer(reinitialized_variables)
+    sess.run(init)
 
-    # create new dataset for model 
-    permutated_mnist_2 = data.permute_mnist() 
-
-    # transfer weights to new model (TODO)
+    # reload saved weights 
     model.load(sess)
+
+    # freeze weights (train only reinitialized variables)
+    model.reset_train_step(variables=reinitialized_variables)
+
+    # reset paramaters for training on new data 
+    permutated_mnist_2 = data.permute_mnist() 
+    trainer.reset(permutated_mnist_2)
+
+    # train on new dataset 
+    trainer.train()
+
 
 
 
