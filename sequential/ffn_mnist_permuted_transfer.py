@@ -44,29 +44,29 @@ def main():
     trainer.train()
 
     # save weights to be transferred (TO-DO)
-    variables = tf.trainable_variables() 
-    print('length of variables: %s' % len(variables))
+    # variables = tf.trainable_variables() 
+    # print('length of variables: %s' % len(variables))
     
-    n = 2
-    saved_variables = variables[:n] 
-    reinitialized_variables = variables[n:] 
-    model.reset_saver(saved_variables)
-    model.save(sess)
+    # n = 2
+    # saved_variables = variables[:n] 
+    # reinitialized_variables = variables[n:] 
+    # model.reset_saver(saved_variables)
+    # model.save(sess)
 
-    ##################################################################
-    ##################### TRANSFER TO NEW DATASET ####################
-    ##################################################################
+    # ##################################################################
+    # ##################### TRANSFER TO NEW DATASET ####################
+    # ##################################################################
 
-    ## transfer weights to new model (TODO)
-    # reinitialize top layer weights 
-    init = tf.variables_initializer(reinitialized_variables)
-    sess.run(init)
+    # ## transfer weights to new model (TODO)
+    # # reinitialize top layer weights 
+    # init = tf.variables_initializer(reinitialized_variables)
+    # sess.run(init)
 
-    # reload saved weights 
-    model.load(sess)
+    # # reload saved weights 
+    # model.load(sess)
 
-    # freeze weights (train only reinitialized variables)
-    model.reset_train_step(variables=reinitialized_variables)
+    # # freeze weights (train only reinitialized variables)
+    # model.reset_train_step(variables=reinitialized_variables)
 
     # reset paramaters for training on new data 
     permutated_mnist_2 = data.permute_mnist() 

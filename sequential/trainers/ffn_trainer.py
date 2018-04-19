@@ -1,5 +1,7 @@
 from base.base_train import BaseTrain
 from tqdm import tqdm
+from copy import deepcopy
+
 import numpy as np
 import tensorflow as tf 
 
@@ -8,34 +10,48 @@ class FFNTrainer(BaseTrain):
         super(FFNTrainer, self).__init__(sess, model, data, config, logger)
         self.test_it = 0
         self.dataset_it = 0
+        self.data_list = [] 
         self.set_labels()
+        self.store_data(self.data)
 
 
     def train_epoch(self): 
         loop = tqdm(range(self.config.num_iter_per_epoch))
+        num_datasets = len(self.data_list)
         losses = [] 
         accs = [] 
-        test_accuracies = [] 
+        test_accuracies = [[] for x in range(num_datasets)] 
 
         for it in loop: 
             loss, acc = self.train_step()
-            test_accuracy = self.test()
             losses.append(loss)
             accs.append(acc)
-            test_accuracies.append(test_accuracy)
+            for idx in reversed(range(num_datasets)): 
+                test_accuracy = self.test(self.data_list[idx])
+                test_accuracies[idx].append(test_accuracy)
+            
         loss = np.mean(losses)
         acc = np.mean(accs)
-        test_accuracy = np.mean(test_accuracies)
+
+        if(len(test_accuracies) > 1):
+            test_accuracies = np.mean(test_accuracies, axis=1)
+        else: 
+            test_accuracies = [np.mean(test_accuracies[0])]
 
         cur_it = self.model.global_step_tensor.eval(self.sess)
         summaries_dict = {} 
         summaries_dict[self.loss_label] = loss 
-        summaries_dict[self.accuracy_label] = acc 
-        summaries_dict[self.test_accuracy_label] = test_accuracy
+        summaries_dict[self.accuracy_label] = acc
+        summaries_dict[self.test_accuracy_label] = test_accuracies[num_datasets-1]
+
+        for idx in reversed(range(num_datasets-1)): 
+            test_accuracy_label = 'previous_acc_' + str(idx)
+            summaries_dict[test_accuracy_label] = test_accuracies[idx]
+        
         print('Iteration: %s' % self.test_it)
         print('Loss: %s' % loss)
         print('Training accuracy: %s' % acc)
-        print('Test accuracy: %s' % test_accuracy)
+        print('Current Test accuracy: %s' % test_accuracies[num_datasets-1])
         self.logger.summarize(self.test_it, summaries_dict=summaries_dict)
         self.test_it += 1
 
@@ -46,12 +62,11 @@ class FFNTrainer(BaseTrain):
 
         return loss, acc 
 
-    def train_new_dataset(self, new_data):
-        self.data = new_data
-        self.train()  
+    def test_previous_dataset(self, previous_data):
+        self.test(previous_data)  
 
-    def test(self): 
-        batch_x, batch_y = self.data.test.next_batch(self.config.batch_size)
+    def test(self, data): 
+        batch_x, batch_y = data.test.next_batch(self.config.batch_size)
         feed_dict = {self.model.x: batch_x, self.model.y: batch_y, self.model.is_training: False}
         acc = self.sess.run(self.model.accuracy, feed_dict=feed_dict)
 
@@ -62,8 +77,13 @@ class FFNTrainer(BaseTrain):
         self.accuracy_label = 'accuracy_' + str(self.dataset_it)
         self.test_accuracy_label = 'test_accuracy_' + str(self.dataset_it)
 
+    def store_data(self, data): 
+        data = deepcopy(data)
+        self.data_list.append(data)
+
     def reset(self, data): 
         self.data = data
+        self.store_data(self.data)
         self.test_it = 0  
         self.dataset_it += 1
         self.set_labels()
