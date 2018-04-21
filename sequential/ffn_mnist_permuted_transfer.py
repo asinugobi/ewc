@@ -1,13 +1,16 @@
 import tensorflow as tf
+import numpy as np 
 
 from data_loader.data_generator import DataGenerator
 from data_loader.data_handler import DataHandler
 from models.ffn_model import FFNModel
 from trainers.ffn_trainer import FFNTrainer
 from utils.config import process_config
+from utils.plotting import plot_results
 from utils.dirs import create_dirs
 from utils.logger import Logger
 from utils.utils import get_args
+
 
 
 def main():
@@ -42,6 +45,8 @@ def main():
 
     # train your model
     trainer.train()
+    plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=[np.mean(trainer.all_test_accuracies, axis=1)])
+    
 
     # save weights to be transferred (TO-DO)
     # variables = tf.trainable_variables() 
@@ -53,9 +58,8 @@ def main():
     # model.reset_saver(saved_variables)
     # model.save(sess)
 
-    # ##################################################################
-    # ##################### TRANSFER TO NEW DATASET ####################
-    # ##################################################################
+    ######################################################################################## TRANSFER TO NEW DATASET ###################
+    ##################################################################
 
     # ## transfer weights to new model (TODO)
     # # reinitialize top layer weights 
@@ -74,6 +78,31 @@ def main():
 
     # train on new dataset 
     trainer.train()
+    test_plots = [[] for x in range(2)]
+    for idx in range(config.num_epochs+1):
+        test_plots[0].append(trainer.all_test_accuracies[idx][0])
+        test_plots[1].append(trainer.all_test_accuracies[idx][1])
+
+    plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots)
+
+    ######################################################################################## TRANSFER TO NEW DATASET ###################
+    ##################################################################
+
+    # reset paramaters for training on new data 
+    permutated_mnist_3 = data.permute_mnist() 
+    trainer.reset(permutated_mnist_3)
+
+    # train on new dataset 
+    trainer.train()
+    test_plots = [[] for x in range(3)]
+    for idx in range(config.num_epochs+1):
+        test_plots[0].append(trainer.all_test_accuracies[idx][0])
+        test_plots[1].append(trainer.all_test_accuracies[idx][1])
+        test_plots[2].append(trainer.all_test_accuracies[idx][2])
+        
+    plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots)
+
+
 
 
 

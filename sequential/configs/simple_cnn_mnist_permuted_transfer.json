@@ -3,7 +3,7 @@
   "dataset": "mnist",
   "num_classes": 10,
   "num_epochs": 100,
-  "num_iter_per_epoch": 50,
+  "num_iter_per_epoch": 100,
   "learning_rate": 0.001,
   "dropout": 0.75,
   "batch_size": 128,

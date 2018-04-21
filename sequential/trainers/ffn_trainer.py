@@ -11,8 +11,10 @@ class FFNTrainer(BaseTrain):
         self.test_it = 0
         self.dataset_it = 0
         self.data_list = [] 
+        self.train_accuracy = [] 
         self.set_labels()
         self.store_data(self.data)
+        self.all_test_accuracies = []
 
 
     def train_epoch(self): 
@@ -32,6 +34,7 @@ class FFNTrainer(BaseTrain):
             
         loss = np.mean(losses)
         acc = np.mean(accs)
+        self.train_accuracy.append(accs)
 
         if(len(test_accuracies) > 1):
             test_accuracies = np.mean(test_accuracies, axis=1)
@@ -43,6 +46,8 @@ class FFNTrainer(BaseTrain):
         summaries_dict[self.loss_label] = loss 
         summaries_dict[self.accuracy_label] = acc
         summaries_dict[self.test_accuracy_label] = test_accuracies[num_datasets-1]
+
+        self.all_test_accuracies.append(test_accuracies) 
 
         for idx in reversed(range(num_datasets-1)): 
             test_accuracy_label = 'previous_acc_' + str(idx)
@@ -91,3 +96,6 @@ class FFNTrainer(BaseTrain):
         epoch_tensor = self.model.init_cur_epoch()
         init = tf.variables_initializer([global_tensor, epoch_tensor])
         self.sess.run(init)
+
+        self.train_accuracy = []
+        self.all_test_accuracies = [] 
