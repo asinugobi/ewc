@@ -1,4 +1,7 @@
 import tensorflow as tf
+import sys 
+
+sys.path.append('/home/asinugobi/tensorflow-1.5.0/tensorflow_pkg/ewc/sequential')
 
 from data_loader.data_generator import DataGenerator
 from data_loader.data_handler import DataHandler
@@ -23,17 +26,22 @@ def main():
 
     # create the experiments dirs
     create_dirs([config.summary_dir, config.checkpoint_dir])
+    
     # create tensorflow session
     sess = tf.Session()
+    
     # create instance of the model you want
     model = SimpleCNNModel(config)
+    
     # create your data generator
     data = DataHandler(config)
-    mnist = data.get_dataset()
+    permutated_mnist = data.permute_mnist() 
+    
     # create tensorboard logger
     logger = Logger(sess, config)
+    
     # create trainer and path all previous components to it
-    trainer = SimpleCNNTrainer(sess, model, mnist, config, logger)
+    trainer = SimpleCNNTrainer(sess, model, permutated_mnist, config, logger)
 
     # here you train your model
     trainer.train()

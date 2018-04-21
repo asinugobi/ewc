@@ -1,5 +1,8 @@
 import tensorflow as tf
 import numpy as np 
+import sys 
+
+sys.path.append('/home/asinugobi/tensorflow-1.5.0/tensorflow_pkg/ewc/sequential')
 
 from data_loader.data_generator import DataGenerator
 from data_loader.data_handler import DataHandler
