@@ -15,6 +15,7 @@ class FFNTrainer(BaseTrain):
         self.set_labels()
         self.store_data(self.data)
         self.all_test_accuracies = []
+        self.all_test_losses = [] 
 
 
     def train_epoch(self): 
@@ -22,15 +23,17 @@ class FFNTrainer(BaseTrain):
         num_datasets = len(self.data_list)
         losses = [] 
         accs = [] 
-        test_accuracies = [[] for x in range(num_datasets)] 
+        test_accuracies = [[] for x in range(num_datasets)]
+        test_losses = [[] for x in range(num_datasets)] 
 
         for it in loop: 
             loss, acc = self.train_step()
             losses.append(loss)
             accs.append(acc)
             for idx in reversed(range(num_datasets)): 
-                test_accuracy = self.test(self.data_list[idx])
+                test_accuracy, test_loss = self.test(self.data_list[idx])
                 test_accuracies[idx].append(test_accuracy)
+                test_losses[idx].append(test_loss)
             
         loss = np.mean(losses)
         acc = np.mean(accs)
@@ -38,8 +41,10 @@ class FFNTrainer(BaseTrain):
 
         if(len(test_accuracies) > 1):
             test_accuracies = np.mean(test_accuracies, axis=1)
+            test_losses = np.mean(test_losses, axis=1)
         else: 
             test_accuracies = [np.mean(test_accuracies[0])]
+            test_losses = [np.mean(test_losses[0])]
 
         cur_it = self.model.global_step_tensor.eval(self.sess)
         summaries_dict = {} 
@@ -48,6 +53,7 @@ class FFNTrainer(BaseTrain):
         summaries_dict[self.test_accuracy_label] = test_accuracies[num_datasets-1]
 
         self.all_test_accuracies.append(test_accuracies) 
+        self.all_test_losses.append(test_losses)
 
         for idx in reversed(range(num_datasets-1)): 
             test_accuracy_label = 'previous_acc_' + str(idx)
@@ -63,7 +69,7 @@ class FFNTrainer(BaseTrain):
     def train_step(self): 
         batch_x, batch_y = self.data.train.next_batch(self.config.batch_size)
         feed_dict = {self.model.x: batch_x, self.model.y: batch_y, self.model.is_training: True}
-        _, loss, acc = self.sess.run([self.model.train_step, self.model.cross_entropy, self.model.accuracy], feed_dict=feed_dict)
+        _, loss, acc = self.sess.run([self.model.train_step, self.model.get_loss(), self.model.accuracy], feed_dict=feed_dict)
 
         return loss, acc 
 
@@ -73,9 +79,9 @@ class FFNTrainer(BaseTrain):
     def test(self, data): 
         batch_x, batch_y = data.test.next_batch(self.config.batch_size)
         feed_dict = {self.model.x: batch_x, self.model.y: batch_y, self.model.is_training: False}
-        acc = self.sess.run(self.model.accuracy, feed_dict=feed_dict)
+        acc, loss = self.sess.run([self.model.accuracy, self.model.get_loss()], feed_dict=feed_dict)
 
-        return acc 
+        return acc, loss  
 
     def set_labels(self):
         self.loss_label = 'loss_' + str(self.dataset_it)
@@ -99,3 +105,4 @@ class FFNTrainer(BaseTrain):
 
         self.train_accuracy = []
         self.all_test_accuracies = [] 
+        self.all_test_losses = [] 

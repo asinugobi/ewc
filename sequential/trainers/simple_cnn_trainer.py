@@ -15,6 +15,8 @@ class SimpleCNNTrainer(BaseTrain):
         self.set_labels()
         self.store_data(self.data)
         self.all_test_accuracies = []
+        self.all_losses = [] 
+
 
     def train_epoch(self): 
         loop = tqdm(range(self.config.num_iter_per_epoch))
@@ -67,7 +69,7 @@ class SimpleCNNTrainer(BaseTrain):
                      self.model.dropout: self.config.dropout}
         _, loss, acc = self.sess.run([self.model.train_step,
                                       self.model.cross_entropy, self.model.accuracy], feed_dict=feed_dict)
-        return loss, acc 
+        return loss, acc
 
     def test(self, data): 
         batch_x, batch_y = data.test.next_batch(self.config.batch_size)
@@ -98,6 +100,6 @@ class SimpleCNNTrainer(BaseTrain):
         epoch_tensor = self.model.init_cur_epoch()
         init = tf.variables_initializer([global_tensor, epoch_tensor])
         self.sess.run(init)
-
+        
         self.train_accuracy = []
         self.all_test_accuracies = [] 

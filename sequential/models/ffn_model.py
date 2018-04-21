@@ -38,6 +38,11 @@ class FFNModel(BaseModel):
         with tf.name_scope('loss'):
             self.cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.y, logits=self.net.y))
 
+    def get_loss(self):
+        if not hasattr(self, "ewc_loss"):
+            return self.cross_entropy
+        return self.ewc_loss
+
     def optimize(self):
         # NOTE: when training, the moving_mean and moving_variance need to be updated. By default the update ops are placed in tf.GraphKeys.UPDATE_OPS, so they need to be added as a dependency to the train_op.(https://www.tensorflow.org/api_docs/python/tf/layers/batch_normalization)
         update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)

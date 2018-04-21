@@ -2,7 +2,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 
 # classification accuracy plotting
-def plot_results(num_iterations=100, train_plots=[], test_plots=[]):
+def plot_results(num_iterations=100, train_plots=[], test_plots=[], loss_plots=[]):
     colors = ['r', 'b', 'g']
 
     # plot training results 
@@ -19,4 +19,11 @@ def plot_results(num_iterations=100, train_plots=[], test_plots=[]):
     plt.xlabel('Iterations')
     plt.ylabel('Test Accuracy')
 
+    loss = plt.figure(3)
+    for idx in range(len(loss_plots)): 
+        plt.plot(iterations, loss_plots[idx], colors[idx])
+    plt.xlabel('Iterations')
+    plt.ylabel('Average Loss')
+
     plt.show() 
+
