@@ -92,23 +92,18 @@ def main():
     ##################################################################
 
     # reset paramaters for training on new data 
-    permutated_mnist_3 = data.permute_mnist() 
-    trainer.reset(permutated_mnist_3)
+    # permutated_mnist_3 = data.permute_mnist() 
+    # trainer.reset(permutated_mnist_3)
 
-    # train on new dataset 
-    trainer.train()
-    test_plots = [[] for x in range(3)]
-    for idx in range(config.num_epochs+1):
-        test_plots[0].append(trainer.all_test_accuracies[idx][0])
-        test_plots[1].append(trainer.all_test_accuracies[idx][1])
-        test_plots[2].append(trainer.all_test_accuracies[idx][2])
+    # # train on new dataset 
+    # trainer.train()
+    # test_plots = [[] for x in range(3)]
+    # for idx in range(config.num_epochs+1):
+    #     test_plots[0].append(trainer.all_test_accuracies[idx][0])
+    #     test_plots[1].append(trainer.all_test_accuracies[idx][1])
+    #     test_plots[2].append(trainer.all_test_accuracies[idx][2])
         
-    plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots)
-
-
-
-
-
+    # plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots)
 
 if __name__ == '__main__':
     main()
