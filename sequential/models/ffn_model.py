@@ -94,6 +94,9 @@ class FFNModel(BaseModel):
         for v in range(len(self.var_list)):
             self.ewc_loss += (lam/2) * tf.reduce_sum(tf.multiply(self.F_accum[v].astype(np.float32),tf.square(self.var_list[v] - self.star_vars[v])))
 
+    def reset_ewc_loss(self): 
+        self.ewc_loss = self.cross_entropy
+
     def compute_fisher(self, imgset, sess, num_samples=200, plot_diffs=False, disp_freq=10):
         # computer Fisher information for each parameter
 

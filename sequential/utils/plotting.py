@@ -33,9 +33,9 @@ def plot_results(num_iterations=100, train_plots=[], test_plots=[], loss_plots=[
     if(show):
         plt.show() 
 
-    train.clf()
-    test.clf()
-    loss.clf()
+    plt.close()
+    plt.close()
+    plt.close()
 
 def plot_varying_penalty(penalties=[], average_loss=[]):
     # plot varying loss vs. penalties results 

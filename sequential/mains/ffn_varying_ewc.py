@@ -83,10 +83,10 @@ def main():
 
     # cycle through ewc penalties 
     min = 0
-    max = 201
-    step = 20
-    # ewc_penalty = range(min, max, step)
-    ewc_penalty = [0, 15]
+    max = 51
+    step = 2
+    ewc_penalty = range(min, max, step)
+    # ewc_penalty = [0, 100]
 
     # reset paramaters for training on new data 
     permutated_mnist_2 = data.permute_mnist() 
@@ -95,8 +95,9 @@ def main():
     for penalty in ewc_penalty: 
         # restore original model 
         model.load(sess)
-
+    
         # set loss/optimizer 
+        model.reset_ewc_loss() 
         model.set_ewc_loss(lam=penalty)
         model.reset_train_step(loss=model.ewc_loss, variables=variables)
 
@@ -117,7 +118,7 @@ def main():
 
         average_losses.append(np.mean(loss_plots[0]))
 
-        # plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path='../figures/', experiment='testing' + str(penalty))
+        plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path='../figures/', experiment='ffn_ewc_' + str(penalty))
 
     plot_varying_penalty(penalties=ewc_penalty, average_loss=average_losses)
 
