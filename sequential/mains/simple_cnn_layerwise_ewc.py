@@ -88,6 +88,7 @@ def main():
     # reset paramaters for training on new data 
     permutated_mnist_2 = data.permute_mnist() 
     average_losses = [] 
+    path = '../figures/simple_cnn_ewc/
     
     for penalty in ewc_penalty: 
         # restore original model 
@@ -119,9 +120,9 @@ def main():
 
         average_losses.append(np.mean(loss_plots[0]))
 
-        plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path='../figures/simple_cnn_ewc/', experiment='simple_cnn_ewc_' + str(penalty))
+        plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path=path, experiment='simple_cnn_ewc_' + str(penalty))
 
-    plot_varying_penalty(penalties=ewc_penalty, average_loss=average_losses)
+    plot_varying_penalty(penalties=ewc_penalty, average_loss=average_losses, path=path)
 
 if __name__ == '__main__':
     main()

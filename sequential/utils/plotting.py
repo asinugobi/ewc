@@ -37,13 +37,21 @@ def plot_results(num_iterations=100, train_plots=[], test_plots=[], loss_plots=[
     plt.close()
     plt.close()
 
-def plot_varying_penalty(penalties=[], average_loss=[]):
+def plot_varying_penalty(penalties=[], average_loss=[], path='', experiment='', save=False, show=False):
     # plot varying loss vs. penalties results 
     loss = plt.figure() 
-    plt.plot(penalties, average_loss, 'r')
+    plt.plot(penalties, average_loss, 'r.')
     plt.xlabel('EWC Penalties')
     plt.ylabel('Average Loss')
-    plt.show() 
+    
+    if (save): 
+        loss.savefig(path + experiment + 'loss_vs_penalty.png')
+    
+    if (show): 
+        plt.show() 
+    
+    # close plot 
+    plt.close() 
 
 
 
