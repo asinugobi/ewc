@@ -43,7 +43,12 @@ class SimpleCNNModel(BaseModel):
     def loss(self): 
         # loss definition 
         with tf.name_scope('loss'):
-            self.cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.y, logits=self.cnn.sigma))
+            self.cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=self.y, logits=self.cnn.sigma))
+
+    def get_loss(self):
+        if not hasattr(self, "ewc_loss"):
+            return self.cross_entropy
+        return self.ewc_loss
 
     def optimize(self):
         # NOTE: when training, the moving_mean and moving_variance need to be updated. By default the update ops are placed in tf.GraphKeys.UPDATE_OPS, so they need to be added as a dependency to the train_op.(https://www.tensorflow.org/api_docs/python/tf/layers/batch_normalization)
@@ -99,6 +104,9 @@ class SimpleCNNModel(BaseModel):
 
         for v in range(len(self.var_list)):
             self.ewc_loss += (lam/2) * tf.reduce_sum(tf.multiply(self.F_accum[v].astype(np.float32),tf.square(self.var_list[v] - self.star_vars[v])))
+
+    def reset_ewc_loss(self): 
+        self.ewc_loss = self.cross_entropy
 
     def compute_fisher(self, imgset, sess, num_samples=200, plot_diffs=False, disp_freq=10):
         # computer Fisher information for each parameter
