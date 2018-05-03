@@ -9,7 +9,7 @@ from data_loader.data_handler import DataHandler
 from models.simple_cnn_model import SimpleCNNModel
 from trainers.simple_cnn_trainer import SimpleCNNTrainer
 from utils.config import process_config
-from utils.plotting import plot_results
+from utils.plotting import *
 from utils.dirs import create_dirs
 from utils.logger import Logger
 from utils.utils import get_args

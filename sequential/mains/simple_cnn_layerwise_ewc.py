@@ -88,9 +88,12 @@ def main():
     # reset paramaters for training on new data 
     permutated_mnist_2 = data.permute_mnist() 
     average_losses = [] 
-    path = '../figures/simple_cnn_ewc/
+    path = config.path
     
     for penalty in ewc_penalty: 
+        print('Evaluating EWC Penalty: %s' % str(penalty))
+        print('====================')
+
         # restore original model 
         model.load(sess)
 
@@ -122,7 +125,7 @@ def main():
 
         plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path=path, experiment='simple_cnn_ewc_' + str(penalty))
 
-    plot_varying_penalty(penalties=ewc_penalty, average_loss=average_losses, path=path)
+    plot_varying_penalty(penalties=ewc_penalty, average_loss=average_losses, path=path, experiment='simple_cnn_ewc_', save=True)
 
 if __name__ == '__main__':
     main()
