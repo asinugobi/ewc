@@ -130,7 +130,7 @@ def main():
 
         average_losses.append(np.mean(loss_plots[0]))
 
-        add_title = ' (lambda = ' + str(penalty) + ')'
+        add_title = ' (penalty = ' + str(penalty) + ')'
 
         plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path=path, experiment='simple_cnn_ewc_' + str(penalty), title=config.title + add_title)
 
