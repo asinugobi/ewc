@@ -9,3 +9,4 @@ python simple_cnn_layerwise_ewc.py -c ../configs/simple_cnn_layerwise_4.json
 
 # 3. Run EWC on both conv layers
 python simple_cnn_layerwise_ewc.py -c ../configs/simple_cnn_layerwise_8.json
+ 
