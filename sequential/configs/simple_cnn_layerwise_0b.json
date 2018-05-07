@@ -2,6 +2,7 @@
     "exp_name": "simple_cnn_layerwise_ewc_0b",
     "dataset": "mnist",
     "path": "../figures/simple_cnn_layerwise_0b/",
+    "title": "Experiment 6",
     "num_classes": 10,
     "num_epochs": 200,
     "num_iter_per_epoch": 100,

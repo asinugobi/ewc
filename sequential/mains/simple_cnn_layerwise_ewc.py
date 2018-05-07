@@ -86,8 +86,10 @@ def main():
     min = 0
     max = 201
     step = 20
-    ewc_penalty = range(min, max, step)
-    # ewc_penalty = [0, 100]
+    if not (config.title == 'Experiment 1'): 
+        ewc_penalty = range(min, max, step)
+    else: 
+        ewc_penalty = [0]
 
     # reset paramaters for training on new data 
     permutated_mnist_2 = data.permute_mnist() 
@@ -128,9 +130,11 @@ def main():
 
         average_losses.append(np.mean(loss_plots[0]))
 
-        plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path=path, experiment='simple_cnn_ewc_' + str(penalty))
+        add_title = ' (lambda = ' + str(penalty) + ')'
 
-    plot_varying_penalty(penalties=ewc_penalty, average_loss=average_losses, path=path, experiment='simple_cnn_ewc_', save=True)
+        plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path=path, experiment='simple_cnn_ewc_' + str(penalty), title=config.title + add_title)
+
+    plot_varying_penalty(penalties=ewc_penalty, average_loss=average_losses, path=path, experiment='simple_cnn_ewc_', save=True, title=config.title) 
 
 if __name__ == '__main__':
     main()
