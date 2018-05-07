@@ -1,0 +1,16 @@
+{
+    "exp_name": "simple_cnn_layerwise_ewc_0b",
+    "dataset": "mnist",
+    "path": "../figures/simple_cnn_layerwise_0b/",
+    "num_classes": 10,
+    "num_epochs": 200,
+    "num_iter_per_epoch": 100,
+    "learning_rate": 0.001,
+    "dropout": 0.75,
+    "batch_size": 128,
+    "state_size": [784],
+    "nth_layer": 8, 
+    "top_layers": 8,
+    "ewc_on_top_layers": true, 
+    "max_to_keep": 5
+}

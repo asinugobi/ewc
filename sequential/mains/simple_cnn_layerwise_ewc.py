@@ -68,7 +68,11 @@ def main():
 
     ## transfer weights to new model
     # save the transferred variables to model 
-    model.set_variable_list(transferred_variables)
+    if config.ewc_on_top_layers:
+        model.set_variable_list(trainable_variables)
+    else:  
+        model.set_variable_list(transferred_variables)
+
     model.star(sess) 
 
     # # freeze weights (train only reinitialized variables)
@@ -98,8 +102,9 @@ def main():
         model.load(sess)
 
         # reinitialize top layer weights 
-        init = tf.variables_initializer(top_layer_variables)
-        sess.run(init)
+        if not config.ewc_on_top_layers: 
+            init = tf.variables_initializer(top_layer_variables)
+            sess.run(init)
     
         # set loss/optimizer 
         model.reset_ewc_loss() 

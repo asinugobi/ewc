@@ -11,5 +11,6 @@
     "state_size": [784],
     "nth_layer": 0, 
     "top_layers": 8,
+    "ewc_on_top_layers": false,
     "max_to_keep": 5
 }

@@ -9,7 +9,7 @@ from data_loader.data_handler import DataHandler
 from models.simple_cnn_model import SimpleCNNModel
 from trainers.simple_cnn_trainer import SimpleCNNTrainer
 from utils.config import process_config
-from utils.plotting import plot_results
+from utils.plotting import *
 from utils.dirs import create_dirs
 from utils.logger import Logger
 from utils.utils import get_args
@@ -47,7 +47,17 @@ def main():
 
     # train your model
     trainer.train()
-    plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=[np.mean(trainer.all_test_accuracies, axis=1)])
+
+    # plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=[np.mean(trainer.all_test_accuracies, axis=1)])
+    test_plots = [[] for x in range(1)]
+    for idx in range(config.num_epochs+1):
+        test_plots[0].append(trainer.all_test_accuracies[idx][0])
+
+    loss_plots = [[] for x in range(1)]
+    for idx in range(config.num_epochs+1):
+        loss_plots[0].append(trainer.all_test_losses[idx][0])
+
+    plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path=config.path, experiment='simple_cnn_initial')
 
     # save weights to be transferred 
     # variables = tf.trainable_variables() 
@@ -80,6 +90,21 @@ def main():
     permutated_mnist_2 = data.permute_mnist() 
     trainer.reset(permutated_mnist_2)
 
+    # save weights to be transferred 
+    variables = tf.trainable_variables() 
+    print('length of variables: %s' % len(variables))
+
+    frozen_variables = variables[:config.nth_layer] 
+    transferred_variables = variables[config.nth_layer : config.top_layers]
+    top_layer_variables = variables[config.top_layers:]
+    trainable_variables = transferred_variables + top_layer_variables
+
+    # reinitialize top layer weights 
+    init = tf.variables_initializer(top_layer_variables)
+    sess.run(init)
+
+    model.reset_train_step(loss=model.cross_entropy, variables=trainable_variables)
+
     # train on new dataset 
     trainer.train()
     test_plots = [[] for x in range(2)]
@@ -87,24 +112,29 @@ def main():
         test_plots[0].append(trainer.all_test_accuracies[idx][0])
         test_plots[1].append(trainer.all_test_accuracies[idx][1])
 
-    plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots)
+    loss_plots = [[] for x in range(2)]
+    for idx in range(config.num_epochs+1):
+        loss_plots[0].append(trainer.all_test_losses[idx][0])
+        loss_plots[1].append(trainer.all_test_losses[idx][1])
+
+    plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path=config.path, experiment='simple_cnn_transfer_baseline_2') 
 
     ######################################################################################## TRANSFER TO NEW DATASET ###################
     ##################################################################
 
     # reset paramaters for training on new data 
-    permutated_mnist_3 = data.permute_mnist() 
-    trainer.reset(permutated_mnist_3)
+    # permutated_mnist_3 = data.permute_mnist() 
+    # trainer.reset(permutated_mnist_3)
 
-    # train on new dataset 
-    trainer.train()
-    test_plots = [[] for x in range(3)]
-    for idx in range(config.num_epochs+1):
-        test_plots[0].append(trainer.all_test_accuracies[idx][0])
-        test_plots[1].append(trainer.all_test_accuracies[idx][1])
-        test_plots[2].append(trainer.all_test_accuracies[idx][2])
+    # # train on new dataset 
+    # trainer.train()
+    # test_plots = [[] for x in range(3)]
+    # for idx in range(config.num_epochs+1):
+    #     test_plots[0].append(trainer.all_test_accuracies[idx][0])
+    #     test_plots[1].append(trainer.all_test_accuracies[idx][1])
+    #     test_plots[2].append(trainer.all_test_accuracies[idx][2])
         
-    plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots)
+    # plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots)
 
 if __name__ == '__main__':
     main()
