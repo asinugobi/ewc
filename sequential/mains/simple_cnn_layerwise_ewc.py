@@ -47,14 +47,14 @@ def main():
         data.save_dataset(dataset=permuted_mnist, filename=filename_1)
     else: 
         permuted_mnist = data.load_dataset(filename=filename_1)
-        print('check: p1')
+        # print('check: p1')
 
     if not os.path.isfile(filename_2): 
         permuted_mnist_2 = data.permute_mnist()
         data.save_dataset(dataset=permuted_mnist_2, filename=filename_2)
     else: 
         permuted_mnist_2 = data.load_dataset(filename=filename_2)
-        print('check: p2')
+        # print('check: p2')
     
     # create tensorboard logger
     logger = Logger(sess, config)
@@ -97,7 +97,7 @@ def main():
     # model.reset_train_step(variables=reinitialized_variables)
 
     # compute fisher matrix 
-    time = model.compute_fisher(permutated_mnist.validation.images, sess, num_samples=200, plot_diffs=False) 
+    time = model.compute_fisher(permuted_mnist.validation.images, sess, num_samples=200, plot_diffs=False) 
     print("Running time for computing FM: %s" % str(time))
 
     # cycle through ewc penalties 
@@ -158,8 +158,8 @@ def main():
         plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path=path, experiment='simple_cnn_ewc_' + str(penalty), title=config.title + add_title)
 
         # save test and loss results 
-        test_data_key = config.exp_name + '_test_' + str(penalty)
-        loss_data_key = config.exp_name + '_loss_' + str(penalty)
+        test_data_key = 'test_' + str(penalty)
+        loss_data_key = 'loss_' + str(penalty)
         save_test_data[test_data_key] = test_plots
         save_loss_data[loss_data_key] = loss_plots 
         
@@ -168,13 +168,13 @@ def main():
     plot_varying_penalty(penalties=ewc_penalty, average_loss=average_losses, path=path, experiment='simple_cnn_ewc_', save=True, title=config.title) 
 
     # save all results in general dictionary 
-    average_losses_data_key = config.exp_name + 'avg_loss' 
+    average_losses_data_key = 'avg_loss' 
     save_to_mat[average_losses_data_key] = average_losses
     save_to_mat['test_accuracies'] = save_test_data
     save_to_mat['loss'] = save_loss_data
 
     # save dictonary to matlab file 
-    savemat(config.data_dir, save_to_mat)
+    savemat(config.data_dir + config.exp_id + '.mat', save_to_mat)
 
 if __name__ == '__main__':
     main()
