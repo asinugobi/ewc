@@ -39,4 +39,3 @@ class Logger():
                 for summary in summary_list:
                     summary_writer.add_summary(summary, step)
                 summary_writer.flush()
-

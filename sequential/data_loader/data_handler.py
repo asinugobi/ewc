@@ -4,6 +4,7 @@ from tensorflow.contrib.learn.python.learn.datasets import base
 from copy import deepcopy
 
 import numpy as np 
+import cPickle as pickle
 
 class DataHandler(object): 
     def __init__(self, config):
@@ -85,3 +86,11 @@ class DataHandler(object):
         second_dataset = base.Datasets(train=train_2, validation=validation_2, test=test_2)
 
         return first_dataset, second_dataset 
+
+    def save_dataset(self, dataset, filename): 
+        file_handler = open(filename, 'w')
+        pickle.dump(dataset, file_handler)
+    
+    def load_dataset(self, filename): 
+        file_handler = open(filename, 'r')
+        return pickle.load(file_handler)

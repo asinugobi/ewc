@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np 
+import os.path 
 import sys 
 
 sys.path.append('/home/asinugobi/tensorflow-1.5.0/tensorflow_pkg/ewc/sequential')
@@ -13,6 +14,7 @@ from utils.plotting import *
 from utils.dirs import create_dirs
 from utils.logger import Logger
 from utils.utils import get_args
+from scipy.io import savemat
 
 def main():
     # capture the config path from the run arguments
@@ -36,13 +38,29 @@ def main():
  
     # create your data generator
     data = DataHandler(config)
-    permutated_mnist = data.permute_mnist()
+
+    # create source and target tasks
+    filename_1 = '../data/experiments/permuted_mnist_1.pickle'
+    filename_2 = '../data/experiments/permuted_mnist_2.pickle' 
+    if not os.path.isfile(filename_1): 
+        permuted_mnist = data.permute_mnist()
+        data.save_dataset(dataset=permuted_mnist, filename=filename_1)
+    else: 
+        permuted_mnist = data.load_dataset(filename=filename_1)
+        print('check: p1')
+
+    if not os.path.isfile(filename_2): 
+        permuted_mnist_2 = data.permute_mnist()
+        data.save_dataset(dataset=permuted_mnist_2, filename=filename_2)
+    else: 
+        permuted_mnist_2 = data.load_dataset(filename=filename_2)
+        print('check: p2')
     
     # create tensorboard logger
     logger = Logger(sess, config)
  
     # create trainer and path all previous components to it
-    trainer = SimpleCNNTrainer(sess, model, permutated_mnist, config, logger)
+    trainer = SimpleCNNTrainer(sess, model, permuted_mnist, config, logger)
 
     # train your model
     # variables = tf.trainable_variables() 
@@ -92,9 +110,13 @@ def main():
         ewc_penalty = [0]
 
     # reset paramaters for training on new data 
-    permutated_mnist_2 = data.permute_mnist() 
     average_losses = [] 
     path = config.path
+
+    # dictionaries for saving data 
+    save_test_data = {} 
+    save_loss_data = {}
+    save_to_mat = {}  
     
     for penalty in ewc_penalty: 
         print('Evaluating EWC Penalty: %s' % str(penalty))
@@ -114,7 +136,7 @@ def main():
         model.reset_train_step(loss=model.ewc_loss, variables=trainable_variables)
 
         # train on new dataset 
-        trainer.reset(permutated_mnist_2)
+        trainer.reset(permuted_mnist_2)
         trainer.train()
         
         # plot results 
@@ -132,9 +154,27 @@ def main():
 
         add_title = ' (penalty = ' + str(penalty) + ')'
 
+        # plot results
         plot_results(num_iterations=config.num_epochs+1, train_plots=trainer.train_accuracy, test_plots=test_plots, loss_plots=loss_plots, save=True, show=False, path=path, experiment='simple_cnn_ewc_' + str(penalty), title=config.title + add_title)
 
+        # save test and loss results 
+        test_data_key = config.exp_name + '_test_' + str(penalty)
+        loss_data_key = config.exp_name + '_loss_' + str(penalty)
+        save_test_data[test_data_key] = test_plots
+        save_loss_data[loss_data_key] = loss_plots 
+        
+
+    # plot average loss versus ewc penalty 
     plot_varying_penalty(penalties=ewc_penalty, average_loss=average_losses, path=path, experiment='simple_cnn_ewc_', save=True, title=config.title) 
+
+    # save all results in general dictionary 
+    average_losses_data_key = config.exp_name + 'avg_loss' 
+    save_to_mat[average_losses_data_key] = average_losses
+    save_to_mat['test_accuracies'] = save_test_data
+    save_to_mat['loss'] = save_loss_data
+
+    # save dictonary to matlab file 
+    savemat(config.data_dir, save_to_mat)
 
 if __name__ == '__main__':
     main()
