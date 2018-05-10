@@ -1,10 +1,10 @@
 # EWC Research Directory
 
-This project focuses on transfer learning. More specifically, we would like to analyze the transfer implications of transferring from our originally trained dataset (or domain) to a new dataset and the resulting performances on the originally trained task. 
+This project focuses on transfer learning. More specifically, we would like to explore the effects of applying an elastic weight penalty to a subset of layers in a convolutional neural network (CNN), otherwise known as layer-wise elastic weight consolidation. We hypothesize that such a technique may provide a boost in forward-transfer performance, while also mitigating the effects of catastrophic interference. 
 
-## Transfer within MNIST 
+## Transfer between Permuted MNIST 
 
-This module focuses on transfer learning within MNIST. Please see the `mnist` directory for more details. 
+This module focuses on transfer learning within MNIST. Please see the `sequntial` directory for more details. 
 
 ## Transfer from ImageNet to CIFAR  
 
