@@ -1,5 +1,6 @@
 {
     "exp_name": "simple_cnn_layerwise_ewc_8b",
+    "exp_id": "8b",
     "dataset": "mnist",
     "path": "../figures/simple_cnn_layerwise_8b/",
     "data_dir": "../data/experiments/",

@@ -1,7 +1,9 @@
 {
     "exp_name": "simple_cnn_layerwise_ewc_0",
+    "exp_id": 0, 
     "dataset": "mnist",
     "path": "../figures/simple_cnn_layerwise_0/",
+    "data_dir": "../data/experiments",
     "title": "Experiment 1",
     "num_classes": 10,
     "num_epochs": 200,
