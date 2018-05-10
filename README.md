@@ -8,4 +8,4 @@ This module focuses on transfer learning within MNIST. Please see the `sequntial
 
 ## Transfer from ImageNet to CIFAR  
 
-This module focuses on transfer learning from ImageNet to CIFAR. This module is currently incomplete, but there is a working Keras + Tensorflow implementation, which you can find [here](https://github.com/asinugobi/layerwise_ewc). 
+This module focuses on transfer learning from ImageNet to CIFAR. This module is currently incomplete, but there is a working Keras + Tensorflow implementation, which you can find [here](https://github.com/asinugobi/layerwise_ewc). **NOTE: This module is incomplete** 
